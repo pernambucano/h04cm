@@ -788,6 +788,9 @@ function renderGame()
  */
 function renderCells()
 {
+    
+    
+    
     // SET THE PROPER RENDER COLOR
     canvas2D.fillStyle = LIVE_COLOR;
     
