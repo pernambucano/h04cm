@@ -718,13 +718,15 @@ function updateGame()
                     // AND GET ITS CURRENT STATE
                     var index = (i * gridWidth) + j;
                     var testCell = updateGrid[index];
+                    var testCellPast = renderGrid[index];
 
                     // CASES
                     // 1) IT'S ALIVE
                     if (testCell === LIVE_CELL)
                         {
                             
-                           
+                            if(testCellPast != LIVE_CELL){
+                           console.log(j);}
                             // 1a FEWER THAN 2 LIVING NEIGHBORS
                             if (numLivingNeighbors < 2)
                                 {
@@ -802,6 +804,8 @@ function renderCells()
                    var cell = getGridCell(renderGrid, i, j);
                    if (cell === LIVE_CELL)
                        {
+                           
+                           //console.log(j);
                            var x = j * cellLength;
                            var y = i * cellLength;
                            canvas2D.fillRect(x, y, cellLength, cellLength);
