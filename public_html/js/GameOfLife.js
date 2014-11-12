@@ -64,6 +64,9 @@ var patterns;
 var cellLookup;
 var imgDir;
 
+// SOUND VARIABLES
+var context;
+var oscillator;
 // INITIALIZATION METHODS
 
 /*
@@ -76,6 +79,8 @@ function initGameOfLife()
     // INIT ALL THE CONSTANTS, i.e. ALL THE
     // THINGS THAT WILL NEVER CHANGE
     initConstants();
+    
+    initializeContext(context);
     
     // INIT THE RENDERING SURFACE
     initCanvas();
@@ -725,8 +730,12 @@ function updateGame()
                     if (testCell === LIVE_CELL)
                         {
                             
-                            if(testCellPast != LIVE_CELL){
-                           console.log(j);}
+                            if(testCellPast != LIVE_CELL)
+                            {
+                                //console.log(j);
+                                play();
+                            
+                            }
                             // 1a FEWER THAN 2 LIVING NEIGHBORS
                             if (numLivingNeighbors < 2)
                                 {
@@ -872,4 +881,37 @@ function swapGrids()
     var temp = updateGrid;
     updateGrid = renderGrid;
     renderGrid = temp;
+}
+
+// Paulo's functions
+
+function play() 
+{
+    oscillator = context.createOscillator();
+    //var oscillator = context.createOscillator();
+    oscillator.connect(context.destination);
+    // Play a sine type curve at A4 frequency (440hz).
+    oscillator.frequency.value = 440;
+    //oscillator.detune.value = semitone * 100;
+    // Note: this constant will be replaced with "sine".
+    oscillator.type = oscillator.SINE;
+    
+    oscillator.start(0);
+}
+
+function stop()
+{
+    oscillator.disconnect(context.destination);
+}
+
+function initializeContext() 
+{
+   window.AudioContext = window.AudioContext || 
+  window.webkitAudioContext || 
+  window.mozAudioContext || 
+  window.oAudioContext || 
+  window.msAudioContext;
+  
+  context = new AudioContext();
+  
 }
