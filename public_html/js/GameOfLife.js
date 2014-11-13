@@ -67,6 +67,8 @@ var imgDir;
 // SOUND VARIABLES
 var context;
 var oscillator;
+var oscillatorList = new Array();
+var gainNodeList = new Array();
 // INITIALIZATION METHODS
 
 /*
@@ -80,7 +82,7 @@ function initGameOfLife()
     // THINGS THAT WILL NEVER CHANGE
     initConstants();
     
-    initializeContext(context);
+    initializeContext();
     
     // INIT THE RENDERING SURFACE
     initCanvas();
@@ -729,12 +731,15 @@ function updateGame()
                     // 1) IT'S ALIVE
                     if (testCell === LIVE_CELL)
                         {
-                            
                             if(testCellPast != LIVE_CELL)
                             {
                                 //console.log(j);
-                                play();
+                                                              
+                            }
                             
+                            else if (testCellPast == LIVE_CELL)
+                            {
+                               
                             }
                             // 1a FEWER THAN 2 LIVING NEIGHBORS
                             if (numLivingNeighbors < 2)
@@ -884,26 +889,35 @@ function swapGrids()
 }
 
 // Paulo's functions
-
-function play() 
+function connectOscToGainNode()
 {
-    oscillator = context.createOscillator();
-    //var oscillator = context.createOscillator();
-    oscillator.connect(context.destination);
-    // Play a sine type curve at A4 frequency (440hz).
-    oscillator.frequency.value = 440;
-    //oscillator.detune.value = semitone * 100;
-    // Note: this constant will be replaced with "sine".
-    oscillator.type = oscillator.SINE;
+    //TODO: adjust volume (change of 2)
+    for (j=0; j<32; j++)
+    {
+        gainNodeList[j] = context.createGain();
+        oscillatorList[j].connect(gainNodeList[j]);
+        gainNodeList[j].connect(context.destination);
+        gainNodeList[j].gain.value = 0;
+                    
+        //oscillatorList[j].noteOn(0); 
+    }    
+}
+
+function createOscillators() 
+{
+    //TODO: create the different sounds
+    for (i =0; i < 32; i++){
+        var oscillator_ = context.createOscillator();
+        oscillator_.connect(context.destination);
+        // Play a sine type curve at A4 frequency (440hz).
+        oscillator_.frequency.value = 440;
+        //oscillator.detune.value = semitone * 100;
+        // Note: this constant will be replaced with "sine".
+        oscillator_.type = oscillator_.SINE;
+        oscillatorList[i] = oscillator_; 
+    }
+    }
     
-    oscillator.start(0);
-}
-
-function stop()
-{
-    oscillator.disconnect(context.destination);
-}
-
 function initializeContext() 
 {
    window.AudioContext = window.AudioContext || 
@@ -914,4 +928,6 @@ function initializeContext()
   
   context = new AudioContext();
   
+    createOscillators();
+    connectOscToGainNode();  
 }
